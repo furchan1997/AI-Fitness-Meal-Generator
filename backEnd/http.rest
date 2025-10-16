@@ -5,13 +5,14 @@ Content-Type: application/json
 
 
 {
-      "gender": "aaa",
-      "age": "aaa",
-      "height": "aaa",
-      "target": "aaa",
-      "activity": "aaa",
-      "kosher": "aaa",
-      "vergen": "aaa",
-      "elergani": "aaa",
-      "favoFoods": "aaa"
+  "fullName": "משה זמברי",
+  "gender": "זכר",
+  "age": 29,
+  "height": 178,
+  "weight": 82,
+  "target": "מסה",
+  "activity": "בינוני",
+  "kosher": true,
+  "vegetarian": false,
+  "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
 }
