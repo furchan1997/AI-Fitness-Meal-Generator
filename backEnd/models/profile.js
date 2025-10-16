@@ -71,9 +71,9 @@ const profileSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
+// יצירת מודל חדש ויצמד למבנה הנתונים שצפויים להתקבל
 const userProfile = mongoose.model("Profile", profileSchema, "profiles");
-
+// ולידציית ג'וי עבור סכמה שתטפל בשגיאות 400 בצורה יסודית, ברורה ומובנת
 function userProfileValidate(profile) {
   const schema = joi.object({
     fullName: joi.string().min(2).max(16).required(),
