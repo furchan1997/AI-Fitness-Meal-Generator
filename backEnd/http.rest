@@ -1,0 +1,17 @@
+@local=http://localhost:3001
+
+POST  {{local}}/api/profile/Create-profile/
+Content-Type: application/json
+
+
+{
+      "gender": "aaa",
+      "age": "aaa",
+      "height": "aaa",
+      "target": "aaa",
+      "activity": "aaa",
+      "kosher": "aaa",
+      "vergen": "aaa",
+      "elergani": "aaa",
+      "favoFoods": "aaa"
+}
