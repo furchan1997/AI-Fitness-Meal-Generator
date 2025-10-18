@@ -13,6 +13,6 @@ Content-Type: application/json
   "target": "מסה",
   "activity": "בינוני",
   "kosher": true,
-  "vegetarian": false,
+  "vegetarian": false,  
   "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
 }

@@ -12,6 +12,7 @@ router.post("/Create-profile/", async (req, res, next) => {
         massage: "Thare is a validate error",
         error: joiError,
       });
+      return;
     }
 
     // יצירת מסמך חדש ושמירתו בבסיס הנתונים

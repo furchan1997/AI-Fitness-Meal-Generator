@@ -1,0 +1,18 @@
+ Install npm and express, nodemon, cors.
+Create MD for JSON format.
+ Start the server and listen on the specified port.
+
+Create a route for the user profile; the request body will include the parameters to analyze the data. Initial testing now, with improvements and additions later.
+
+Install mongoose and dotenv.
+Connect to MongoDB and use a .env file for the DB URI/key.
+Create a User Profile schema.
+Install Joi for validation; on validation failures return HTTP 400 and include the error details.
+Add a route to create a user profile and save it to the MongoDB collection with proper error handling.
+
+- UI/UX with REACT.JS.
+- Install vite+React.js+Bootstrap, Clean the CSS on appliction.
+- A head component that will contain the app summary.
+- Install formik and Joi for state managment form and validation managment, Setting initial values and onSubmit function. 
+- A started form component that will contain the profile coustomer.
+- A input component that will contain the chackbox input, select input, text area input and a regular input.
