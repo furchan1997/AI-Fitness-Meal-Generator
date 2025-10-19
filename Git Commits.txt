@@ -18,4 +18,11 @@ Add a route to create a user profile and save it to the MongoDB collection with 
 - A input component that will contain the chackbox input, select input, text area input and a regular input.
 
 
+Add user profile creation flow with Axios integration
+- Added local server URL config file (JSON)
+- Installed Axios for async server requests
+- Created httpService.js with base URL setup
+- Implemented userProfile.js for user profile API requests
+- Connected ProfileForm component with Formik onSubmit to create new user profile
+
 
