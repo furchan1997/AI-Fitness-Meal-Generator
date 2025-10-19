@@ -26,6 +26,7 @@ const profileSchema = new mongoose.Schema({
   },
   weight: {
     type: Number,
+    min: 30,
     required: true,
   },
   target: {
@@ -81,7 +82,7 @@ function userProfileValidate(profile) {
     gender: joi.string().valid("זכר", "נקבה").required(),
     age: joi.number().min(16).max(70).required(),
     height: joi.number().min(150).required(),
-    weight: joi.number().required(),
+    weight: joi.number().min(30).required(),
     target: joi.string().valid("מסה", "חיטוב", "בריאות כללית").required(),
     activity: joi.string().valid("קל", "בינוני", "כבד").required(),
     kosher: joi.boolean().default(true),

@@ -2,6 +2,7 @@
 import { useFormik } from "formik";
 import Input from "../input";
 import { createUserProfile } from "../../services/userProfile";
+import joi from "joi";
 
 function ProfileForm() {
   const form = useFormik({
@@ -19,6 +20,33 @@ function ProfileForm() {
       vegetarian: false,
       favoFoods: "",
     },
+
+    validate(value) {
+      const schema = joi.object({
+        fullName: joi.string().min(2).max(16).required(),
+        gender: joi.string().valid("זכר", "נקבה").required(),
+        age: joi.number().min(16).max(70).required(),
+        height: joi.number().min(150).required(),
+        weight: joi.number().min(30).required(),
+        target: joi.string().valid("מסה", "חיטוב", "בריאות כללית").required(),
+        activity: joi.string().valid("קל", "בינוני", "כבד").required(),
+        kosher: joi.boolean().default(true),
+        vegetarian: joi.boolean().default(false),
+        favoFoods: joi.string().min(0).max(256).default("").optional(),
+      });
+
+      const { error } = schema.validate(value, { abortEarly: false });
+      const errors = {};
+      if (!errors) return null;
+
+      for (let detali of error.details) {
+        const path = detali.path[0];
+        errors[path] = detali.message;
+      }
+      console.log(errors);
+      return errors;
+    },
+
     //  פונקציה אשר תשלח את ערכי הטופס לשרת
     async onSubmit(profile) {
       console.log(profile);
@@ -49,6 +77,7 @@ function ProfileForm() {
           name={"fullName"}
           required
           {...form.getFieldProps("fullName")}
+          error={form.touched.fullName && form.errors.fullName}
         />
         <Input
           isSelect
@@ -59,6 +88,7 @@ function ProfileForm() {
           name={"gender"}
           required
           {...form.getFieldProps("gender")}
+          error={form.touched.gender && form.errors.gender}
         />
         <Input
           isInput
@@ -68,6 +98,7 @@ function ProfileForm() {
           name={"age"}
           required
           {...form.getFieldProps("age")}
+          error={form.touched.age && form.errors.age}
         />
         <Input
           isInput
@@ -77,6 +108,7 @@ function ProfileForm() {
           name={"height"}
           required
           {...form.getFieldProps("height")}
+          error={form.touched.height && form.errors.height}
         />
         <Input
           isInput
@@ -86,6 +118,7 @@ function ProfileForm() {
           name={"weight"}
           required
           {...form.getFieldProps("weight")}
+          error={form.touched.weight && form.errors.weight}
         />
         <Input
           isSelect
@@ -96,6 +129,7 @@ function ProfileForm() {
           name={"target"}
           required
           {...form.getFieldProps("target")}
+          error={form.touched.target && form.errors.target}
         />
         <Input
           isSelect
@@ -106,6 +140,7 @@ function ProfileForm() {
           name={"activity"}
           required
           {...form.getFieldProps("activity")}
+          error={form.touched.activity && form.errors.activity}
         />
         <Input
           chackBox

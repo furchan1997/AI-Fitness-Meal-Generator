@@ -10,6 +10,9 @@ function Input({
 }) {
   return (
     <div className="mb-3">
+      {rest.error && (
+        <div className="invalid-feedback d-block">{rest.error}</div>
+      )}
       {/* עבור שדות צ'ק בוקס */}
       {chackBox && (
         <div>

@@ -25,4 +25,8 @@ Add user profile creation flow with Axios integration
 - Implemented userProfile.js for user profile API requests
 - Connected ProfileForm component with Formik onSubmit to create new user profile
 
+Add client-side validation using Joi with user feedback
+- Installed Joi for client-side form validation
+- Implemented validation rules for form fields
+- Added user-friendly feedback and guidance for validation errors
 
