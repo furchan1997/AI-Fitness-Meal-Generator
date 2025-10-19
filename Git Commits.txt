@@ -16,3 +16,6 @@ Add a route to create a user profile and save it to the MongoDB collection with 
 - Install formik and Joi for state managment form and validation managment, Setting initial values and onSubmit function. 
 - A started form component that will contain the profile coustomer.
 - A input component that will contain the chackbox input, select input, text area input and a regular input.
+
+
+

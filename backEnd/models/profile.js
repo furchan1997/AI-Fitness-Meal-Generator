@@ -46,25 +46,26 @@ const profileSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  elergani: {
-    type: [String],
-    enum: [
-      "בוטנים",
-      "אגוזים",
-      "חלב",
-      "ביצים",
-      "דגים",
-      "פירות ים",
-      "סויה",
-      "חיטה",
-      "שומשום",
-    ],
-    default: [],
-  },
+  // elergani: {
+  //   type: [String],
+  //   enum: [
+  //     "בוטנים",
+  //     "אגוזים",
+  //     "חלב",
+  //     "ביצים",
+  //     "דגים",
+  //     "פירות ים",
+  //     "סויה",
+  //     "חיטה",
+  //     "שומשום",
+  //   ],
+  //   default: [],
+  // },
   favoFoods: {
     type: String,
     minlength: 0,
     maxlength: 256,
+    default: "",
   },
   createAt: {
     type: Date,
@@ -85,25 +86,25 @@ function userProfileValidate(profile) {
     activity: joi.string().valid("קל", "בינוני", "כבד").required(),
     kosher: joi.boolean().default(true),
     vegetarian: joi.boolean().default(false),
-    elergani: joi
-      .array()
-      .items(
-        joi
-          .string()
-          .valid(
-            "בוטנים",
-            "אגוזים",
-            "חלב",
-            "ביצים",
-            "דגים",
-            "פירות ים",
-            "סויה",
-            "חיטה",
-            "שומשום"
-          )
-      )
-      .default([]),
-    favoFoods: joi.string().max(256),
+    // elergani: joi
+    //   .array()
+    //   .items(
+    //     joi
+    //       .string()
+    //       .valid(
+    //         "בוטנים",
+    //         "אגוזים",
+    //         "חלב",
+    //         "ביצים",
+    //         "דגים",
+    //         "פירות ים",
+    //         "סויה",
+    //         "חיטה",
+    //         "שומשום"
+    //       )
+    //   )
+    //   .default([]),
+    favoFoods: joi.string().min(0).max(256).default("").optional(),
   });
 
   return schema.validate(profile);

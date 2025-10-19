@@ -3,8 +3,6 @@ function Input({
   inputType,
   chackBox = false,
   isSelect = false,
-  onChange = () => {},
-  selectedValue,
   options = [],
   isTextArea = false,
   label,
@@ -32,7 +30,21 @@ function Input({
       {/* עבור בחירה של אופציה אחת */}
       {isSelect && (
         <div>
-          <select value={selectedValue} onChange={onChange}>
+          <label className="form-label" htmlFor={rest.id}>
+            {rest.required && <span className="text-danger">*</span>}
+            {label}
+          </label>
+
+          <select
+            id={rest.id}
+            name={rest.name}
+            className="form-select"
+            {...rest}
+          >
+            {/* ניתן ערך אשר יסביר למשתמש שהוא צריך לבחור מתול הרשימה */}
+            <option value="" disabled>
+              בחר/י...
+            </option>
             {options.map((op) => (
               <option key={op} value={op}>
                 {op}
@@ -44,7 +56,7 @@ function Input({
       {/* עבור שדות קלט רגילים שצפוי להיות בהם ערך מספרי או סטרינגי */}
       {isInput && (
         <div>
-          <label htmlFor={rest.name}>{label}</label>
+          <label htmlFor={rest.id}>{label}</label>
           {rest.required && <span className="text-danger">*</span>}
           <input
             className={["form-control", rest.error && "is-invalid"]

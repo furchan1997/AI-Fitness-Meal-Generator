@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,6 +8,7 @@ const profile = require("./routers/profile.js");
 
 const PORT = 3001;
 const CONNECTION_STRING_ATLAS = process.env.CONNECTION_STRING_ATLAS;
+app.use(cors());
 // יצירת מילדוואר אשר מאפשר לשרת לקבל ולקרוא בקשות בפורמט ג'ייסון
 app.use(express.json());
 // מידלוואר עבור יצירת פרופיל למשתמש
