@@ -68,6 +68,11 @@ const profileSchema = new mongoose.Schema({
     maxlength: 256,
     default: "",
   },
+  bmr: {
+    type: Number,
+    default: 0,
+  },
+  tdee: { type: Number, default: 0 },
   createAt: {
     type: Date,
     default: Date.now,

@@ -1,5 +1,7 @@
 @local=http://localhost:3001
 
+### CREATE PROFILE
+
 POST  {{local}}/api/profile/Create-profile/
 Content-Type: application/json
 
@@ -16,3 +18,11 @@ Content-Type: application/json
   "vegetarian": false,  
   "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
 }
+
+### DELETE MANY: 
+
+DELETE  {{local}}/api/profile/Delete-profiles/
+
+### GET ALL PROFILES:
+
+GET  {{local}}/api/profile/All-profiles/

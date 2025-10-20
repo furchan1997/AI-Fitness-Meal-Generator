@@ -30,3 +30,11 @@ Add client-side validation using Joi with user feedback
 - Implemented validation rules for form fields
 - Added user-friendly feedback and guidance for validation errors
 
+Add dedicated calculations module for BMR and TDEE health metrics
+- Created a dedicated folder for health and nutrition calculations related to body composition and aesthetics
+- Implemented BMRCalculation function based on the Mifflin–St Jeor formula for men and women
+- Implemented TDEECalculation function to estimate daily energy expenditure using the BMR value and activity level
+- Integrated both functions into the user profile creation route
+- Stored calculated BMR and TDEE values in MongoDB as part of the user profile document
+
+

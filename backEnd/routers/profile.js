@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const { userProfile, userProfileValidate } = require("../models/profile");
+const { BMRCalculation } = require("../calculations/BMR");
+const { TDEECalculation } = require("../calculations/TDEE");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", async (req, res, next) => {
@@ -14,9 +16,14 @@ router.post("/Create-profile/", async (req, res, next) => {
       });
       return;
     }
+    // שימוש בערכים בכדי לבצע את החישוב של ה-BMR וה-TDEE, שמירתם בבסיס הנתונים
+    const { gender, weight, height, age, activity } = req.body;
+
+    const bmr = BMRCalculation({ gender, weight, height, age });
+    const tdee = TDEECalculation({ bmr, activity });
 
     // יצירת מסמך חדש ושמירתו בבסיס הנתונים
-    const profile = await userProfile.create({ ...req.body });
+    const profile = await userProfile.create({ ...req.body, bmr, tdee });
     await profile.save();
 
     res.status(201).json({
@@ -26,6 +33,38 @@ router.post("/Create-profile/", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// מחיקת כל הפרופילים
+router.delete("/Delete-profiles/", async (req, res, next) => {
+  const profiles = await userProfile.deleteMany({}, {});
+  if (profiles.deletedCount === 0) {
+    res.status(404).json({
+      massage: "No profiles found.",
+    });
+    return;
+  }
+
+  res.json({
+    massage: "Profiles deleted.",
+    profiles: profiles.deletedCount,
+  });
+});
+
+// קבלת כל הפרופילים
+router.get("/All-profiles/", async (req, res, next) => {
+  const profiles = await userProfile.find({}, {});
+  if (profiles.length === 0) {
+    res.status(404).json({
+      massage: "No profiles found.",
+    });
+    return;
+  }
+
+  res.status(200).json({
+    massage: "All profiles.",
+    profiles,
+  });
 });
 
 module.exports = router;
