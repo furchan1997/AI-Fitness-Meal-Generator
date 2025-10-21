@@ -37,6 +37,23 @@ Add dedicated calculations module for BMR and TDEE health metrics
 - Integrated both functions into the user profile creation route
 - Stored calculated BMR and TDEE values in MongoDB as part of the user profile document
 
+Server & Client updates: Gemini AI report generation, improved UI, and fallback handling
+Server:
+- Implemented AI report generation using Google Gemini API
+- Created new instance with secure API key
+- Added prompt generation based on user profile data from DB
+- Implemented fallback handling for missing or invalid data
+- Integrated buildReport() function to process AI responses
+- Sent relevant user parameters to the AI model
+- Tested and verified fallback behavior
+Client:
+- Added dedicated state management for loading, success, and error states of the AI report
+- Created static arrays for activity levels and user goals (used as fitness guidance)
+- Updated Input component to support select options with user hints and explanations
+- Built new AIReport component to display AI-generated reports, errors, and loading states using React Markdown for better readability
+- Improved responsive design and mobile layout adjustments
+
+
 
 
 

@@ -1,5 +1,5 @@
 // קובץ מערכים אשר ישמשו כהנחיות ספורטיביות למשתמש
-
+// עבור רמת פעילות ואימונים שבועיים
 export const activity = [
   {
     value: "קל",
@@ -15,6 +15,7 @@ export const activity = [
   },
 ];
 
+// עבור מטרת המשתמש
 export const targets = [
   {
     value: "בריאות כללית",
