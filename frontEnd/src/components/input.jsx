@@ -4,10 +4,12 @@ function Input({
   chackBox = false,
   isSelect = false,
   options = [],
+  guidanceRequired /* משתנה שיאפשר להראות בטופס אופציית בחירות עם הנחיות למשתמש */,
   isTextArea = false,
   label,
   ...rest
 }) {
+  // console.log(options);
   return (
     <div className="mb-3">
       {rest.error && (
@@ -39,20 +41,29 @@ function Input({
           </label>
 
           <select
-            id={rest.id}
-            name={rest.name}
-            className="form-select"
+            className={[
+              "form-select",
+              "border-2",
+              "border-primary",
+              rest.error && "is-invalid",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             {...rest}
           >
-            {/* ניתן ערך אשר יסביר למשתמש שהוא צריך לבחור מתול הרשימה */}
+            {/* ניתן ערך אשר יסביר למשתמש שהוא צריך לבחור מתוך הרשימה */}
             <option value="" disabled>
               בחר/י...
             </option>
-            {options.map((op) => (
-              <option key={op} value={op}>
-                {op}
-              </option>
-            ))}
+            {/* עבור קלט של אפשרוית שבו נדרשת הנחיות למשתמש */}
+            {guidanceRequired
+              ? options.map(({ value, hint }) => (
+                  <option key={value} value={value}>
+                    {`${value}: ${hint}`}
+                  </option>
+                ))
+              : // עבור קלט של אפשרוית ללא מתן הנחיות למשתמש
+                options.map((op) => <option value={op}>{op}</option>)}
           </select>
         </div>
       )}

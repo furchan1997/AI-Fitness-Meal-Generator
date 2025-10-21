@@ -47,21 +47,7 @@ const profileSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  // elergani: {
-  //   type: [String],
-  //   enum: [
-  //     "בוטנים",
-  //     "אגוזים",
-  //     "חלב",
-  //     "ביצים",
-  //     "דגים",
-  //     "פירות ים",
-  //     "סויה",
-  //     "חיטה",
-  //     "שומשום",
-  //   ],
-  //   default: [],
-  // },
+
   favoFoods: {
     type: String,
     minlength: 0,
@@ -92,24 +78,6 @@ function userProfileValidate(profile) {
     activity: joi.string().valid("קל", "בינוני", "כבד").required(),
     kosher: joi.boolean().default(true),
     vegetarian: joi.boolean().default(false),
-    // elergani: joi
-    //   .array()
-    //   .items(
-    //     joi
-    //       .string()
-    //       .valid(
-    //         "בוטנים",
-    //         "אגוזים",
-    //         "חלב",
-    //         "ביצים",
-    //         "דגים",
-    //         "פירות ים",
-    //         "סויה",
-    //         "חיטה",
-    //         "שומשום"
-    //       )
-    //   )
-    //   .default([]),
     favoFoods: joi.string().min(0).max(256).default("").optional(),
   });
 

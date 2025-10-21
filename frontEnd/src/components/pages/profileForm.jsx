@@ -3,10 +3,21 @@ import { useFormik } from "formik";
 import Input from "../input";
 import { createUserProfile } from "../../services/userProfile";
 import joi from "joi";
+import { useState } from "react";
+import AIProfileReport from "../aiProfileReport";
+import { activity, targets } from "../../guidelines/sportActivity";
 
+// רכיב טופס למטרת בניית פרופיל משתמש אשר ינחה את הבינה המלאכותית לתת דו''ח מותאם אישית כמה שאפשר ולבסוף הנפקת והצגת הדו''ח
 function ProfileForm() {
+  const [profileAIReport, setProfileAIReport] = useState({}); // שמירת דו''ח בינה מלאכותית שהתקבלה מהשרת בעזרת סטייט מותאם
+  const [errorFromServer, setErrorFromServer] = useState(null); // שמירת השגיאות שהתקבלו מהשרת, שמירתן בסטייט למען מחווה למשתמש
+  const [loading, setLoading] = useState(false); // סטייט אשר יראה מצב של המתנה בזמן בו ממתינים לתגובה מהשרת
+
   const form = useFormik({
     validateOnMount: false, // למען ביצוע ולידציה רק בעת ניסיון השליחה
+    validateOnChange: true, // בכל פעם שהמתמש משנה את ערך באחד מהשדות אז פורמיק יריץ את פונקציית הוולידציה
+    validateOnBlur: true, // פורמיק יבצע ולידציה כאשר השדה מקבל פוקוס- כלומר המשתמש עובר לדשה אחר או יוצא מהשדה עם העכבר
+
     // ערכים התחלתיים
     initialValues: {
       fullName: "",
@@ -21,6 +32,7 @@ function ProfileForm() {
       favoFoods: "",
     },
 
+    // סכמת ולידציה של ג'וי
     validate(value) {
       const schema = joi.object({
         fullName: joi.string().min(2).max(16).required(),
@@ -36,35 +48,45 @@ function ProfileForm() {
       });
 
       const { error } = schema.validate(value, { abortEarly: false });
+      // אובייקט השגיאות ולידציה שיתפסו מג'וי
       const errors = {};
-      if (!errors) return null;
+      if (!error) return {};
 
-      for (let detali of error.details) {
+      // תפיסת שגיאות ושמירתן באובייקט השגיאות שנוצר למעלה
+      for (const detali of error.details) {
+        // לולאה שתרוץ ותתפוס את השגיאה הראשונה תשמור אותו כמפתח ואת ההודעה כערך
         const path = detali.path[0];
         errors[path] = detali.message;
       }
-      console.log(errors);
       return errors;
     },
 
     //  פונקציה אשר תשלח את ערכי הטופס לשרת
     async onSubmit(profile) {
-      console.log(profile);
+      setErrorFromServer(null); //איפוס מצב השגיאות מהשרת
+      setLoading(true); // איפוס מצב ההמתמנות
+
       try {
         const response = await createUserProfile(profile);
-        console.log(response);
+        setProfileAIReport(response?.data?.AI_Report); // שמירת הדו''ח
         return response?.data;
       } catch (err) {
-        console.log(err);
+        // טיפול במצבי שגיאה מהשרת
+        if (err) {
+          setLoading(false);
+          setErrorFromServer(err?.message);
+        }
+      } finally {
+        setLoading(false);
       }
     },
   });
 
   return (
-    <div>
-      <h1>מלא את השדות</h1>
+    <div className="container">
+      <h1>מלא/י את השדות</h1>
       <form
-        className="w-25"
+        className="w-50"
         onSubmit={form.handleSubmit}
         noValidate
         autoComplete="off"
@@ -77,7 +99,7 @@ function ProfileForm() {
           name={"fullName"}
           required
           {...form.getFieldProps("fullName")}
-          error={form.touched.fullName && form.errors.fullName}
+          error={form?.touched?.fullName && form?.errors?.["fullName"]}
         />
         <Input
           isSelect
@@ -88,7 +110,7 @@ function ProfileForm() {
           name={"gender"}
           required
           {...form.getFieldProps("gender")}
-          error={form.touched.gender && form.errors.gender}
+          error={form?.touched?.gender && form?.errors?.["gender"]}
         />
         <Input
           isInput
@@ -98,7 +120,7 @@ function ProfileForm() {
           name={"age"}
           required
           {...form.getFieldProps("age")}
-          error={form.touched.age && form.errors.age}
+          error={form?.touched?.age && form?.errors?.["age"]}
         />
         <Input
           isInput
@@ -108,7 +130,7 @@ function ProfileForm() {
           name={"height"}
           required
           {...form.getFieldProps("height")}
-          error={form.touched.height && form.errors.height}
+          error={form?.touched?.height && form?.errors?.["height"]}
         />
         <Input
           isInput
@@ -118,29 +140,31 @@ function ProfileForm() {
           name={"weight"}
           required
           {...form.getFieldProps("weight")}
-          error={form.touched.weight && form.errors.weight}
+          error={form?.touched?.weight && form?.errors?.["weight"]}
         />
         <Input
           isSelect
+          guidanceRequired
           label={"מטרה ספורטיבית"}
-          options={["בריאות כללית", "חיטוב", "מסה"]}
+          options={targets}
           inputType={"text"}
           id={"target"}
           name={"target"}
           required
           {...form.getFieldProps("target")}
-          error={form.touched.target && form.errors.target}
+          error={form?.touched?.target && form?.errors?.["target"]}
         />
         <Input
           isSelect
+          guidanceRequired
           label={"פעילות ספורטיבית"}
-          options={["קל", "בינוני", "כבד"]}
+          options={activity}
           inputType={"text"}
           id={"activity"}
           name={"activity"}
           required
           {...form.getFieldProps("activity")}
-          error={form.touched.activity && form.errors.activity}
+          error={form?.touched?.activity && form?.errors?.["activity"]}
         />
         <Input
           chackBox
@@ -171,6 +195,15 @@ function ProfileForm() {
           שלח/י
         </button>
       </form>
+
+      {/* שימוש ברכיב דו''ח בינה מלאכותית */}
+      <>
+        <AIProfileReport
+          aiReport={profileAIReport}
+          loading={loading}
+          error={errorFromServer}
+        />
+      </>
     </div>
   );
 }

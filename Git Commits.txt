@@ -38,3 +38,5 @@ Add dedicated calculations module for BMR and TDEE health metrics
 - Stored calculated BMR and TDEE values in MongoDB as part of the user profile document
 
 
+
+

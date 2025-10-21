@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { userProfile, userProfileValidate } = require("../models/profile");
 const { BMRCalculation } = require("../calculations/BMR");
 const { TDEECalculation } = require("../calculations/TDEE");
+const { buildReport } = require("../services/aiReport");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", async (req, res, next) => {
@@ -26,9 +27,25 @@ router.post("/Create-profile/", async (req, res, next) => {
     const profile = await userProfile.create({ ...req.body, bmr, tdee });
     await profile.save();
 
+    const profileForAI = {
+      fullName: profile.fullName,
+      gender: profile.gender,
+      age: profile.age,
+      height: profile.height,
+      weight: profile.weight,
+      target: profile.target,
+      activity: profile.activity,
+      kosher: profile.kosher,
+      vegetarian: profile.vegetarian,
+      favoFoods: profile.favoFoods,
+    };
+
+    const aiReport = await buildReport(profileForAI);
+
     res.status(201).json({
       massage: "Profile created.",
       profile,
+      AI_Report: aiReport,
     });
   } catch (err) {
     next(err);

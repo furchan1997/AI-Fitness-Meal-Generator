@@ -7,13 +7,13 @@ Content-Type: application/json
 
 
 {
-  "fullName": "משה זמברי",
+  "fullName": "tch bgkch",
   "gender": "זכר",
   "age": 29,
-  "height": 178,
-  "weight": 82,
+  "height": 173,
+  "weight": 87,
   "target": "מסה",
-  "activity": "בינוני",
+  "activity": "כבד",
   "kosher": true,
   "vegetarian": false,  
   "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
@@ -26,3 +26,4 @@ DELETE  {{local}}/api/profile/Delete-profiles/
 ### GET ALL PROFILES:
 
 GET  {{local}}/api/profile/All-profiles/
+

@@ -1,5 +1,4 @@
 // פונקציה לחישוב ה-TDEE למען הבנה מה רמת הפעילות הספורטיבית של האדם וכמה משקל הוא שורף ביום
-
 const TDEECalculation = ({ bmr, activity }) => {
   const factors = {
     קל: 1.2,
