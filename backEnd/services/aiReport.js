@@ -1,9 +1,8 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { userProfile } = require("../models/profile");
 
 // פונקציה יצירת דו''ח בינה מלאכותית של ג'מיני
 async function buildReport(userProfile) {
-  // הכנת טקסט חוקים להצדה בדו''ח כולל FALLBACK במיקרה ובו אין התאמות
+  // הכנת טקסט חוקים להצגה בדו''ח כולל FALLBACK במיקרה ובו אין התאמות
   const profileText =
     !userProfile || Object.keys(userProfile).length === 0
       ? "אין נתוני פרופיל — יש להזין נתונים בסיסיים כמו גיל, מין, משקל ופעילות."
@@ -12,7 +11,7 @@ async function buildReport(userProfile) {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY); // יצירת מופע חדש של המחלקה GoogleGenerativeAI תוך שימוש במפתח ה-API שנשמר במשתנה הסביבה
 
-    // בחירת מודל
+    // בחירת מודל לשליחת הפרופיל והפרומפט
     const model = genAI.getGenerativeModel({
       model: "gemini-2.0-flash",
     });

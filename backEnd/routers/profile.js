@@ -12,7 +12,7 @@ router.post("/Create-profile/", async (req, res, next) => {
     if (error) {
       const joiError = error.details[0].message;
       res.status(400).json({
-        massage: "Thare is a validate error",
+        message: "Thare is a validate error",
         error: joiError,
       });
       return;
@@ -43,7 +43,7 @@ router.post("/Create-profile/", async (req, res, next) => {
     const aiReport = await buildReport(profileForAI);
 
     res.status(201).json({
-      massage: "Profile created.",
+      message: "Profile created.",
       profile,
       AI_Report: aiReport,
     });
@@ -54,34 +54,42 @@ router.post("/Create-profile/", async (req, res, next) => {
 
 // מחיקת כל הפרופילים
 router.delete("/Delete-profiles/", async (req, res, next) => {
-  const profiles = await userProfile.deleteMany({}, {});
-  if (profiles.deletedCount === 0) {
-    res.status(404).json({
-      massage: "No profiles found.",
-    });
-    return;
-  }
+  try {
+    const profiles = await userProfile.deleteMany({}, {});
+    if (profiles.deletedCount === 0) {
+      res.status(404).json({
+        message: "No profiles found.",
+      });
+      return;
+    }
 
-  res.json({
-    massage: "Profiles deleted.",
-    profiles: profiles.deletedCount,
-  });
+    res.json({
+      message: "Profiles deleted.",
+      profiles: profiles.deletedCount,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // קבלת כל הפרופילים
 router.get("/All-profiles/", async (req, res, next) => {
-  const profiles = await userProfile.find({}, {});
-  if (profiles.length === 0) {
-    res.status(404).json({
-      massage: "No profiles found.",
-    });
-    return;
-  }
+  try {
+    const profiles = await userProfile.find({}, {});
+    if (profiles.length === 0) {
+      res.status(404).json({
+        message: "No profiles found.",
+      });
+      return;
+    }
 
-  res.status(200).json({
-    massage: "All profiles.",
-    profiles,
-  });
+    res.status(200).json({
+      message: "All profiles.",
+      profiles,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

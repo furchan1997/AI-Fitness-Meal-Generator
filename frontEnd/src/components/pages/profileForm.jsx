@@ -15,8 +15,8 @@ function ProfileForm() {
 
   const form = useFormik({
     validateOnMount: false, // למען ביצוע ולידציה רק בעת ניסיון השליחה
-    validateOnChange: true, // בכל פעם שהמתמש משנה את ערך באחד מהשדות אז פורמיק יריץ את פונקציית הוולידציה
-    validateOnBlur: true, // פורמיק יבצע ולידציה כאשר השדה מקבל פוקוס- כלומר המשתמש עובר לדשה אחר או יוצא מהשדה עם העכבר
+    validateOnChange: true, // בכל פעם שהמשתמש משנה את הערך באחד מהשדות אז פורמיק יריץ את פונקציית הוולידציה
+    validateOnBlur: true, // פורמיק יבצע ולידציה כאשר השדה מקבל פוקוס-כלומר המשתמש עובר לשדה אחר או יוצא מהשדה עם העכבר
 
     // ערכים התחלתיים
     initialValues: {
@@ -98,7 +98,7 @@ function ProfileForm() {
           id={"fullName"}
           name={"fullName"}
           required
-          {...form.getFieldProps("fullName")}
+          {...form.getFieldProps("fullName")} // מתודה של פורמיק שמחברת בין שדה קלט לטופס. היא מחזירה את כל הפרופס הדרושים לניהול הערך.
           error={form?.touched?.fullName && form?.errors?.["fullName"]}
         />
         <Input

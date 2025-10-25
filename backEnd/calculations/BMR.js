@@ -1,4 +1,5 @@
-// פונקציה לחישוב ה-BMR עבור הבנה האם המשקל תקין ובאיזה מצב האדם
+//  קצב חילוף החומרים הבסיסי — כלומר כמה קלוריות הגוף שורף במנוחה מוחלטת
+// מחושב לפי נוסחת: Mifflin–St Jeor
 const BMRCalculation = ({ gender, weight, height, age }) => {
   if (gender === "זכר") {
     return 10 * weight + 6.25 * height - 5 * age + 5;
