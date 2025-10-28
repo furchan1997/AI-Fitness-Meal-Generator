@@ -9,7 +9,6 @@ function Input({
   label,
   ...rest
 }) {
-  // console.log(options);
   return (
     <div className="mb-3">
       {rest.error && (
