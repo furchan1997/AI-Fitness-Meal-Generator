@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import Input from "../input";
 import { createUserProfile } from "../../services/userProfile";
 import joi from "joi";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import AIProfileReport from "../aiProfileReport";
 import { activity, targets } from "../../guidelines/sportActivity";
 
@@ -11,7 +11,8 @@ import { activity, targets } from "../../guidelines/sportActivity";
 function ProfileForm() {
   const [profileAIReport, setProfileAIReport] = useState({}); // שמירת דו''ח בינה מלאכותית שהתקבלה מהשרת בעזרת סטייט מותאם
   const [errorFromServer, setErrorFromServer] = useState(null); // שמירת השגיאות שהתקבלו מהשרת, שמירתן בסטייט למען מחווה למשתמש
-  const [loading, setLoading] = useState(false); // סטייט אשר יראה מצב של המתנה בזמן בו ממתינים לתגובה מהשרת
+
+  const [isPending, startTransition] = useTransition(); // הוק שעוטף את הפונקציה שצריכה לרוץ ברקע
 
   const form = useFormik({
     validateOnMount: false, // למען ביצוע ולידציה רק בעת ניסיון השליחה
@@ -62,22 +63,22 @@ function ProfileForm() {
     },
 
     //  פונקציה אשר תשלח את ערכי הטופס לשרת
-    async onSubmit(profile) {
+    async onSubmit(profile, { resetForm }) {
       setErrorFromServer(null); //איפוס מצב השגיאות מהשרת
-      setLoading(true); // איפוס מצב ההמתמנות
 
       try {
         const response = await createUserProfile(profile);
         setProfileAIReport(response?.data?.AI_Report); // שמירת הדו''ח
+        startTransition(() => {
+          resetForm(); // מנקה את הטופס, ניתן הרשאה לגרום לפונקציה הזו להידחות
+        });
+        console.log(response);
         return response?.data;
       } catch (err) {
         // טיפול במצבי שגיאה מהשרת
         if (err) {
-          setLoading(false);
           setErrorFromServer(err?.message);
         }
-      } finally {
-        setLoading(false);
       }
     },
   });
@@ -192,17 +193,14 @@ function ProfileForm() {
           {...form.getFieldProps("favoFoods")}
         />
         <button className="btn btn-primary fw-bold" type="submit">
-          שלח/י
+          {/*ניצול מצב בו ה-isPending מופעל ובעזרתו לנהל מצב ההתנה של התגובה מהשרת*/}
+          {form.isSubmitting || isPending ? "יוצר דו''ח..." : "שלח/י"}{" "}
         </button>
       </form>
 
       {/* שימוש ברכיב דו''ח בינה מלאכותית */}
       <>
-        <AIProfileReport
-          aiReport={profileAIReport}
-          loading={loading}
-          error={errorFromServer}
-        />
+        <AIProfileReport aiReport={profileAIReport} error={errorFromServer} />
       </>
     </div>
   );

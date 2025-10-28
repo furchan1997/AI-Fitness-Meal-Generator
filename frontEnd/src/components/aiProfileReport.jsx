@@ -1,38 +1,7 @@
 import ReactMarkdown from "react-markdown";
 //  רכיב אשר יראה למשתמש את הדו''ח בינה מלאכותית, מצבי שגיאה, המתנה וברירת המחדל
-function AIProfileReport({
-  loading,
-  error,
-  initialDisplay,
-  aiReport = {},
-  fullName,
-}) {
+function AIProfileReport({ error, initialDisplay, aiReport = {}, fullName }) {
   const createdAt = new Date().toLocaleTimeString("he-IL");
-  // תצוגת טעינה מעוצבת + נגישות
-  if (loading) {
-    return (
-      <div dir="rtl" className="card mt-3 w-100">
-        <div className="card-body">
-          <div className="d-flex align-items-center gap-3" aria-live="polite">
-            <div className="spinner-border" role="status" aria-busy="true">
-              <span className="visually-hidden">מייצר דו״ח…</span>
-            </div>
-            <div>
-              <h2 className="h6 mb-1">מייצר דו״ח…</h2>
-              <p className="text-muted small mb-0">זה עשוי לארוך מספר שניות.</p>
-            </div>
-          </div>
-          <hr className="my-3" />
-          <div className="placeholder-glow">
-            <span className="placeholder col-8 d-block mb-2"></span>
-            <span className="placeholder col-6 d-block mb-2"></span>
-            <span className="placeholder col-10 d-block mb-2"></span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Error
   if (error) {
     return (

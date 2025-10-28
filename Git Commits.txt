@@ -53,6 +53,7 @@ Client:
 - Built new AIReport component to display AI-generated reports, errors, and loading states using React Markdown for better readability
 - Improved responsive design and mobile layout adjustments
 
+Implemented useTransition for form reset and improved UX during pending state
 
 
 
