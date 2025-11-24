@@ -3,6 +3,8 @@ const { userProfile, userProfileValidate } = require("../models/profile");
 const { BMRCalculation } = require("../calculations/BMR");
 const { TDEECalculation } = require("../calculations/TDEE");
 const { buildReport } = require("../services/aiReport");
+const { proteinIntakeCulc } = require("../calculations/proteinIntake");
+const { getRecommendationByBodyFat } = require("../calculations/bodyFat");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", async (req, res, next) => {
@@ -18,13 +20,21 @@ router.post("/Create-profile/", async (req, res, next) => {
       return;
     }
     // שימוש בערכים בכדי לבצע את החישוב של ה-BMR וה-TDEE, שמירתם בבסיס הנתונים
-    const { gender, weight, height, age, activity } = req.body;
+    const { gender, weight, height, age, activity, target, bodyFat } = req.body;
 
     const bmr = BMRCalculation({ gender, weight, height, age });
     const tdee = TDEECalculation({ bmr, activity });
+    const proteinIntake = proteinIntakeCulc({ target, weight }); // שליחת מידע למשתמש עבור צריכת כמות חלבון לפי המטרה שלו
+    const suitability = getRecommendationByBodyFat({ target, bodyFat, gender }); // בדיקת טווח אחוזי שומן תקינים
 
     // יצירת מסמך חדש ושמירתו בבסיס הנתונים
-    const profile = await userProfile.create({ ...req.body, bmr, tdee });
+    const profile = await userProfile.create({
+      ...req.body,
+      bmr,
+      tdee,
+      proteinIntake,
+      RecommendationByBodyFat: suitability.message,
+    });
     await profile.save();
 
     const profileForAI = {
@@ -40,8 +50,7 @@ router.post("/Create-profile/", async (req, res, next) => {
       favoFoods: profile.favoFoods,
     };
 
-    const aiReport = await buildReport(profileForAI);
-
+    // const aiReport = await buildReport(profileForAI);
     res.status(201).json({
       message: "Profile created.",
       profile,

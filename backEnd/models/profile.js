@@ -36,7 +36,7 @@ const profileSchema = new mongoose.Schema({
   },
   activity: {
     type: String,
-    enum: ["קל", "בינוני", "כבד"],
+    enum: ["קל", "בינוני", "קשה"],
     required: true,
   },
   kosher: {
@@ -48,17 +48,34 @@ const profileSchema = new mongoose.Schema({
     default: false,
   },
 
+  bodyFat: {
+    type: Number,
+    required: true,
+    minlength: 2,
+    maxlength: 124,
+  },
+
+  RecommendationByBodyFat: {
+    type: String,
+    default: "",
+  },
+
   favoFoods: {
     type: String,
     minlength: 0,
     maxlength: 256,
     default: "",
   },
+
   bmr: {
     type: Number,
     default: 0,
   },
   tdee: { type: Number, default: 0 },
+  proteinIntake: {
+    type: Number,
+    default: 0,
+  },
   createAt: {
     type: Date,
     default: Date.now,
@@ -75,9 +92,10 @@ function userProfileValidate(profile) {
     height: joi.number().min(150).required(),
     weight: joi.number().min(30).required(),
     target: joi.string().valid("מסה", "חיטוב", "בריאות כללית").required(),
-    activity: joi.string().valid("קל", "בינוני", "כבד").required(),
+    activity: joi.string().valid("קל", "בינוני", "קשה").required(),
     kosher: joi.boolean().default(true),
     vegetarian: joi.boolean().default(false),
+    bodyFat: joi.number().required(),
     favoFoods: joi.string().min(0).max(256).default("").optional(),
   });
 
