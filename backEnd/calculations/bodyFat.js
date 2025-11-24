@@ -19,40 +19,47 @@ const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
     message: null,
   };
 
-  // בדיקה עבור משתמש עם אחוזי שומן נמוכים מדיי ומטרתו היא חיטוב
+  // זכר – אחוזי שומן נמוכים בחיטוב
   if (bodyFat < LIMITS.זכר.cutLow && target === "חיטוב" && gender === "זכר") {
     return {
       isRecommended: false,
       level: "NOT OK",
-      message: "Body fat is low for cut for man",
+      message:
+        "אחוזי השומן נמוכים מהרצוי לביצוע חיטוב. מומלץ להימנע מכניסה לחיטוב בשלב זה.",
+      dangerZone: true,
     };
   }
 
-  // בדיקה עבור משתמש עם אחוזי שומן גבוהים מדיי ומטרתו היא מסה
+  // זכר – אחוזי שומן גבוהים במסה
   if (bodyFat > LIMITS.זכר.bulkHige && target === "מסה" && gender === "זכר") {
     return {
       isRecommended: false,
       level: "NOT OK",
-      message: "Body fat is hige for massa for man",
+      message:
+        "אחוזי השומן גבוהים לביצוע מסה בצורה יעילה. מומלץ לשקול ייצוב או חיטוב קל לפני מעבר למסע.",
+      dangerZone: true,
     };
   }
 
-  //   לנשים
-  // בדיקה עבור משתמש עם אחוזי שומן נמוכים מדיי ומטרתו היא חיטוב
+  // נקבה – אחוזי שומן נמוכים בחיטוב
   if (bodyFat < LIMITS.נקבה.cutLow && target === "חיטוב" && gender === "נקבה") {
     return {
       isRecommended: false,
       level: "NOT OK",
-      message: "Body fat is low for cut for woman",
+      message:
+        "אחוזי השומן נמוכים מהרצוי לחיטוב. מומלץ להימנע משלב חיטוב עד לעלייה לאזור בטוח יותר.",
+      dangerZone: true,
     };
   }
 
-  // בדיקה עבור משתמש עם אחוזי שומן גבוהים מדיי ומטרתו היא מסה
+  // נקבה – אחוזי שומן גבוהים במסה
   if (bodyFat > LIMITS.נקבה.bulkHige && target === "מסה" && gender === "נקבה") {
     return {
       isRecommended: false,
       level: "NOT OK",
-      message: "Body fat is hige for massa for woman",
+      message:
+        "אחוזי השומן גבוהים לביצוע מסה בצורה אופטימלית. ייתכן שכדאי להתמקד בחיטוב מתון לפני מסה.",
+      dangerZone: true,
     };
   }
 

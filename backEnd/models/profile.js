@@ -60,6 +60,11 @@ const profileSchema = new mongoose.Schema({
     default: "",
   },
 
+  dangerZone: {
+    type: Boolean,
+    default: false,
+  },
+
   favoFoods: {
     type: String,
     minlength: 0,
@@ -76,6 +81,7 @@ const profileSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  caloriIntake: { type: Number, default: 0 },
   createAt: {
     type: Date,
     default: Date.now,

@@ -7,16 +7,16 @@ Content-Type: application/json
 
 
 {
-  "fullName": "new user 2",
-  "gender": "נקבה",
+  "fullName": "נקבה ",
+  "gender": "זכר",
   "age": 29,
   "height": 173,
-  "weight": 100,
-  "target": "חיטוב",
+  "weight": 90,
+  "target": "מסה",
   "activity": "קשה",
   "kosher": true,
   "vegetarian": false,  
-  "bodyFat": 6,
+  "bodyFat":53,
   "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
 }
 

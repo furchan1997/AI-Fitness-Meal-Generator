@@ -5,6 +5,8 @@ const { TDEECalculation } = require("../calculations/TDEE");
 const { buildReport } = require("../services/aiReport");
 const { proteinIntakeCulc } = require("../calculations/proteinIntake");
 const { getRecommendationByBodyFat } = require("../calculations/bodyFat");
+const { dailyCalotieIntake } = require("../calculations/dailyCalotieIntake");
+const { buildPreReport } = require("../services/preReport");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", async (req, res, next) => {
@@ -26,6 +28,7 @@ router.post("/Create-profile/", async (req, res, next) => {
     const tdee = TDEECalculation({ bmr, activity });
     const proteinIntake = proteinIntakeCulc({ target, weight }); // שליחת מידע למשתמש עבור צריכת כמות חלבון לפי המטרה שלו
     const suitability = getRecommendationByBodyFat({ target, bodyFat, gender }); // בדיקת טווח אחוזי שומן תקינים
+    const caloriIntake = dailyCalotieIntake({ target, tdee }); // שליחת כמות הקלורית היומית עבור משתמש
 
     // יצירת מסמך חדש ושמירתו בבסיס הנתונים
     const profile = await userProfile.create({
@@ -33,9 +36,21 @@ router.post("/Create-profile/", async (req, res, next) => {
       bmr,
       tdee,
       proteinIntake,
-      RecommendationByBodyFat: suitability.message,
+      RecommendationByBodyFat: suitability?.message,
+      dangerZone: suitability?.dangerZone,
+      caloriIntake,
     });
     await profile.save();
+
+    // שליחת דו''ח מוקדם ללא AI:
+    const preReport = buildPreReport({
+      target,
+      dangerZone: suitability?.dangerZone,
+      proteinIntake,
+      caloriIntake,
+      dangerZoneMsg: suitability?.message,
+    });
+    console.log("msg", suitability?.dangerZone);
 
     const profileForAI = {
       fullName: profile.fullName,
@@ -54,7 +69,8 @@ router.post("/Create-profile/", async (req, res, next) => {
     res.status(201).json({
       message: "Profile created.",
       profile,
-      AI_Report: aiReport,
+      preReport,
+      // AI_Report: aiReport,
     });
   } catch (err) {
     next(err);

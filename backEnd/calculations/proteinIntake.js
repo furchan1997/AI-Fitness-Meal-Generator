@@ -1,16 +1,12 @@
+const { targetService } = require("../services/targetService");
+const { getProteinAmount } = require("../services/formulas/nutritionFormulas");
+
 // חישוב כמות החלבון שעל המשתמש לצרוך ביום
 const proteinIntakeCulc = ({ target, weight }) => {
-  if (target === "בריאות כללית") {
-    return weight * 1.6;
-  }
-
-  if (target === "חיטוב") {
-    return weight * 2.2;
-  }
-
-  if (target === "מסה") {
-    return weight * 2;
-  }
+  const proteinAmount = getProteinAmount(weight);
+  const targetKey = targetService(target);
+  const offSet = proteinAmount[targetKey] ?? 0;
+  return offSet;
 };
 
 module.exports = { proteinIntakeCulc };
