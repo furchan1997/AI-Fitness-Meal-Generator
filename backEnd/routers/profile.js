@@ -49,8 +49,8 @@ router.post("/Create-profile/", async (req, res, next) => {
       proteinIntake,
       caloriIntake,
       dangerZoneMsg: suitability?.message,
+      isHealthTargetAndLowCalo: suitability?.isHealthTargetAndLowCalo,
     });
-    console.log("msg", suitability?.dangerZone);
 
     const profileForAI = {
       fullName: profile.fullName,
@@ -63,14 +63,16 @@ router.post("/Create-profile/", async (req, res, next) => {
       kosher: profile.kosher,
       vegetarian: profile.vegetarian,
       favoFoods: profile.favoFoods,
+      preReport,
+      msg: profile.RecommendationByBodyFat,
     };
 
-    // const aiReport = await buildReport(profileForAI);
+    const aiReport = await buildReport(profileForAI);
     res.status(201).json({
       message: "Profile created.",
       profile,
       preReport,
-      // AI_Report: aiReport,
+      AI_Report: aiReport,
     });
   } catch (err) {
     next(err);

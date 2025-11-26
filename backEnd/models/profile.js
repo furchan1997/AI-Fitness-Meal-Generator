@@ -22,11 +22,13 @@ const profileSchema = new mongoose.Schema({
   height: {
     type: Number,
     min: 150,
+    max: 200,
     required: true,
   },
   weight: {
     type: Number,
-    min: 30,
+    min: 40,
+    max: 120,
     required: true,
   },
   target: {
@@ -51,8 +53,8 @@ const profileSchema = new mongoose.Schema({
   bodyFat: {
     type: Number,
     required: true,
-    minlength: 2,
-    maxlength: 124,
+    min: 3,
+    max: 60,
   },
 
   RecommendationByBodyFat: {
@@ -95,13 +97,13 @@ function userProfileValidate(profile) {
     fullName: joi.string().min(2).max(16).required(),
     gender: joi.string().valid("זכר", "נקבה").required(),
     age: joi.number().min(16).max(70).required(),
-    height: joi.number().min(150).required(),
-    weight: joi.number().min(30).required(),
+    height: joi.number().min(150).max(200).required(),
+    weight: joi.number().min(40).max(120).required(),
     target: joi.string().valid("מסה", "חיטוב", "בריאות כללית").required(),
     activity: joi.string().valid("קל", "בינוני", "קשה").required(),
     kosher: joi.boolean().default(true),
     vegetarian: joi.boolean().default(false),
-    bodyFat: joi.number().required(),
+    bodyFat: joi.number().min(3).max(60).required(),
     favoFoods: joi.string().min(0).max(256).default("").optional(),
   });
 

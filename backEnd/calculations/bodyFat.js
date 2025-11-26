@@ -1,27 +1,31 @@
+let baseUserGuidance = {
+  isRecommended: true,
+  level: "OK",
+  message: null,
+};
+// בדיקת טווח אחוזי שומן תקינים עבור זכר ונקבה
+const LIMITS = {
+  נקבה: {
+    cutLow: 14,
+    bulkHige: 35,
+  },
+
+  זכר: {
+    cutLow: 7,
+    bulkHige: 22,
+  },
+};
+
 const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
-  // בדיקת טווח אחוזי שומן תקינים עבור זכר ונקבה
-  const LIMITS = {
-    נקבה: {
-      cutLow: 14,
-      bulkHige: 35,
-    },
-
-    זכר: {
-      cutLow: 7,
-      bulkHige: 22,
-    },
-  };
-
   //   יצירת אובייקט דיפולטיבי עבור אחוזי שומן תקינים
   let userGuidance = {
-    isRecommended: true,
-    level: "OK",
-    message: null,
+    ...baseUserGuidance,
   };
 
   // זכר – אחוזי שומן נמוכים בחיטוב
   if (bodyFat < LIMITS.זכר.cutLow && target === "חיטוב" && gender === "זכר") {
     return {
+      ...userGuidance,
       isRecommended: false,
       level: "NOT OK",
       message:
@@ -33,10 +37,12 @@ const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
   // זכר – אחוזי שומן גבוהים במסה
   if (bodyFat > LIMITS.זכר.bulkHige && target === "מסה" && gender === "זכר") {
     return {
+      ...userGuidance,
+
       isRecommended: false,
       level: "NOT OK",
       message:
-        "אחוזי השומן גבוהים לביצוע מסה בצורה יעילה. מומלץ לשקול ייצוב או חיטוב קל לפני מעבר למסע.",
+        "אחוזי השומן גבוהים לביצוע מסה בצורה יעילה. מומלץ לשקול ייצוב או חיטוב קל לפני מעבר למסה.",
       dangerZone: true,
     };
   }
@@ -44,6 +50,8 @@ const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
   // נקבה – אחוזי שומן נמוכים בחיטוב
   if (bodyFat < LIMITS.נקבה.cutLow && target === "חיטוב" && gender === "נקבה") {
     return {
+      ...userGuidance,
+
       isRecommended: false,
       level: "NOT OK",
       message:
@@ -55,6 +63,8 @@ const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
   // נקבה – אחוזי שומן גבוהים במסה
   if (bodyFat > LIMITS.נקבה.bulkHige && target === "מסה" && gender === "נקבה") {
     return {
+      ...userGuidance,
+
       isRecommended: false,
       level: "NOT OK",
       message:
@@ -62,8 +72,75 @@ const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
       dangerZone: true,
     };
   }
+  //   מצב בו המטרה הינה בריאות כללית
+  //  זכר  - אחוזי שומן גבוהים
+  if (
+    target === "בריאות כללית" &&
+    bodyFat > LIMITS.זכר.bulkHige &&
+    gender === "זכר"
+  ) {
+    return {
+      ...userGuidance,
+
+      isRecommended: false,
+      level: "NOT OK",
+      message: `אחוזי השומן גבוהים. ייתכן שכדאי להתמקד בחיטוב וגירעון קלורי`,
+      dangerZone: true,
+      isHealthTargetAndLowCalo: false,
+    };
+  }
+  //  זכר - אחוזי שומן נמוכים
+  if (
+    target === "בריאות כללית" &&
+    bodyFat < LIMITS.זכר.cutLow &&
+    gender === "זכר"
+  ) {
+    console.log("FROM BODT FAT:", userGuidance?.message);
+    return {
+      ...userGuidance,
+      isRecommended: false,
+      level: "NOT OK",
+      message: `אחוזי השומן נמוכים מדיי. ייתכן שכדאי להתמקד בפלוס קלורי`,
+      dangerZone: true,
+      isHealthTargetAndLowCalo: true,
+    };
+  }
+
+  //  נקבה  - אחוזי שומן גבוהים
+  if (
+    target === "בריאות כללית" &&
+    bodyFat > LIMITS.נקבה.bulkHige &&
+    gender === "נקבה"
+  ) {
+    return {
+      ...userGuidance,
+
+      isRecommended: false,
+      level: "NOT OK",
+      message: `אחוזי השומן גבוהים. ייתכן שכדאי להתמקד בחיטוב וגירעון קלורי`,
+      dangerZone: true,
+      isHealthTargetAndLowCalo: false,
+    };
+  }
+  //  נקבה - אחוזי שומן נמוכים
+  if (
+    target === "בריאות כללית" &&
+    bodyFat < LIMITS.נקבה.cutLow &&
+    gender === "נקבה"
+  ) {
+    console.log(userGuidance?.message);
+    return {
+      ...userGuidance,
+
+      isRecommended: false,
+      level: "NOT OK",
+      message: `אחוזי השומן גבוהים. ייתכן שכדאי להתמקד בחיטוב וגירעון קלורי`,
+      dangerZone: true,
+      isHealthTargetAndLowCalo: true,
+    };
+  }
 
   return userGuidance;
 };
 
-module.exports = { getRecommendationByBodyFat };
+module.exports = { getRecommendationByBodyFat, baseUserGuidance };

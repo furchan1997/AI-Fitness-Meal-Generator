@@ -7,16 +7,16 @@ Content-Type: application/json
 
 
 {
-  "fullName": "נקבה ",
-  "gender": "זכר",
+  "fullName": "אריאל",
+  "gender": "נקבה",
   "age": 29,
   "height": 173,
-  "weight": 90,
-  "target": "מסה",
-  "activity": "קשה",
+  "weight": 80,
+  "target": "בריאות כללית",
+  "activity": "קל",
   "kosher": true,
   "vegetarian": false,  
-  "bodyFat":53,
+  "bodyFat":54,
   "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
 }
 
