@@ -10,7 +10,7 @@ export const activity = [
     hint: "3-4 אימונים בשבוע",
   },
   {
-    value: "כבד",
+    value: "קשה",
     hint: "5-6 אימונים בשבוע",
   },
 ];

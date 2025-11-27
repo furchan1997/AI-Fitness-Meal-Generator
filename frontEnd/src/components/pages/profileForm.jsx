@@ -10,6 +10,8 @@ import { activity, targets } from "../../guidelines/sportActivity";
 // רכיב טופס למטרת בניית פרופיל משתמש אשר ינחה את הבינה המלאכותית לתת דו''ח מותאם אישית כמה שאפשר ולבסוף הנפקת והצגת הדו''ח
 function ProfileForm() {
   const [profileAIReport, setProfileAIReport] = useState({}); // שמירת דו''ח בינה מלאכותית שהתקבלה מהשרת בעזרת סטייט מותאם
+  const [userProfile, setUserProfile] = useState({}); // שמירת פרופיל משתמש סטייט מותאם
+  const [preReport, setPreReport] = useState({});
   const [errorFromServer, setErrorFromServer] = useState(null); // שמירת השגיאות שהתקבלו מהשרת, שמירתן בסטייט למען מחווה למשתמש
 
   const [isPending, startTransition] = useTransition(); // הוק שעוטף את הפונקציה שצריכה לרוץ ברקע
@@ -21,13 +23,14 @@ function ProfileForm() {
 
     // ערכים התחלתיים
     initialValues: {
-      fullName: "",
-      gender: "",
+      fullName: "ari",
+      gender: "זכר",
       age: 30,
       height: 178,
       weight: 75,
-      target: "",
-      activity: "",
+      target: "בריאות כללית",
+      activity: "קל",
+      bodyFat: 39,
       kosher: true,
       vegetarian: false,
       favoFoods: "",
@@ -42,9 +45,10 @@ function ProfileForm() {
         height: joi.number().min(150).required(),
         weight: joi.number().min(30).required(),
         target: joi.string().valid("מסה", "חיטוב", "בריאות כללית").required(),
-        activity: joi.string().valid("קל", "בינוני", "כבד").required(),
+        activity: joi.string().valid("קל", "בינוני", "קשה").required(),
         kosher: joi.boolean().default(true),
         vegetarian: joi.boolean().default(false),
+        bodyFat: joi.number().min(3).max(60).required(),
         favoFoods: joi.string().min(0).max(256).default("").optional(),
       });
 
@@ -69,15 +73,18 @@ function ProfileForm() {
       try {
         const response = await createUserProfile(profile);
         setProfileAIReport(response?.data?.AI_Report); // שמירת הדו''ח
+        setUserProfile(response?.data?.profile); // שמירת פרופיל משתמש
+        setPreReport(response?.data?.preReport); // שמירת דו''ח פרופיל ללא AI
         startTransition(() => {
           resetForm(); // מנקה את הטופס, ניתן הרשאה לגרום לפונקציה הזו להידחות
         });
-        console.log(response);
+        console.log(response?.data);
         return response?.data;
       } catch (err) {
         // טיפול במצבי שגיאה מהשרת
         if (err) {
           setErrorFromServer(err?.message);
+          console.log(err);
         }
       }
     },
@@ -168,6 +175,16 @@ function ProfileForm() {
           error={form?.touched?.activity && form?.errors?.["activity"]}
         />
         <Input
+          isInput
+          label={"אחוזי שומן"}
+          inputType={"number"}
+          id={"bodyFat"}
+          name={"bodyFat"}
+          required
+          {...form.getFieldProps("bodyFat")}
+          error={form?.touched?.bodyFat && form?.errors?.["bodyFat"]}
+        />
+        <Input
           chackBox
           label={"אוכל/ת כשר?"}
           id={"kosher"}
@@ -200,7 +217,12 @@ function ProfileForm() {
 
       {/* שימוש ברכיב דו''ח בינה מלאכותית */}
       <>
-        <AIProfileReport aiReport={profileAIReport} error={errorFromServer} />
+        <AIProfileReport
+          aiReport={profileAIReport}
+          error={errorFromServer}
+          profile={userProfile}
+          effectiveTarget={preReport?.effectiveTarget}
+        />
       </>
     </div>
   );

@@ -1,7 +1,9 @@
 import ReactMarkdown from "react-markdown";
+import Profile from "./baseProfile";
 //  רכיב אשר יראה למשתמש את הדו''ח בינה מלאכותית, מצבי שגיאה, המתנה וברירת המחדל
-function AIProfileReport({ error, initialDisplay, aiReport = {}, fullName }) {
+function AIProfileReport({ error, aiReport = {}, profile, effectiveTarget }) {
   const createdAt = new Date().toLocaleTimeString("he-IL");
+
   // Error
   if (error) {
     return (
@@ -16,9 +18,10 @@ function AIProfileReport({ error, initialDisplay, aiReport = {}, fullName }) {
   if (Object.keys(aiReport).length > 0) {
     return (
       <div dir="rtl" className="card mt-3 w-100">
+        <Profile profile={profile} effectiveTarget={effectiveTarget} />
         <div className="card-body">
           <h2 className="h4 mb-3">
-            להלן דו״ח AI{fullName ? ` עבור ${fullName}` : ""}
+            להלן דו״ח AI{profile?.fullName ? ` עבור ${profile?.fullName}` : ""}
           </h2>
           <h3 className="h6">דו״ח</h3>
           <ReactMarkdown>{String(aiReport)}</ReactMarkdown>

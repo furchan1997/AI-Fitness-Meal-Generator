@@ -30,18 +30,6 @@ router.post("/Create-profile/", async (req, res, next) => {
     const suitability = getRecommendationByBodyFat({ target, bodyFat, gender }); // בדיקת טווח אחוזי שומן תקינים
     const caloriIntake = dailyCalotieIntake({ target, tdee }); // שליחת כמות הקלורית היומית עבור משתמש
 
-    // יצירת מסמך חדש ושמירתו בבסיס הנתונים
-    const profile = await userProfile.create({
-      ...req.body,
-      bmr,
-      tdee,
-      proteinIntake,
-      RecommendationByBodyFat: suitability?.message,
-      dangerZone: suitability?.dangerZone,
-      caloriIntake,
-    });
-    await profile.save();
-
     // שליחת דו''ח מוקדם ללא AI:
     const preReport = buildPreReport({
       target,
@@ -51,6 +39,19 @@ router.post("/Create-profile/", async (req, res, next) => {
       dangerZoneMsg: suitability?.message,
       isHealthTargetAndLowCalo: suitability?.isHealthTargetAndLowCalo,
     });
+
+    // יצירת מסמך חדש ושמירתו בבסיס הנתונים
+    const profile = await userProfile.create({
+      ...req.body,
+      target: target,
+      bmr,
+      tdee,
+      proteinIntake,
+      RecommendationByBodyFat: suitability?.message,
+      dangerZone: suitability?.dangerZone,
+      caloriIntake,
+    });
+    await profile.save();
 
     const profileForAI = {
       fullName: profile.fullName,
