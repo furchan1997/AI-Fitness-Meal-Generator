@@ -7,9 +7,11 @@ const { proteinIntakeCulc } = require("../calculations/proteinIntake");
 const { getRecommendationByBodyFat } = require("../calculations/bodyFat");
 const { dailyCalotieIntake } = require("../calculations/dailyCalotieIntake");
 const { buildPreReport } = require("../services/preReport");
+const authMW = require("../Middleware/auth");
 
 // יצירת פרופיל משתמש חדש
-router.post("/Create-profile/", async (req, res, next) => {
+router.post("/Create-profile/", authMW, async (req, res, next) => {
+  console.log(req.user);
   try {
     // בדיקת שגיאות של שדות(סטטוס 400)
     const { error } = userProfileValidate(req.body);

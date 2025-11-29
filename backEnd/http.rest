@@ -1,13 +1,15 @@
 @local=http://localhost:3001
+@localGoogle="http://localhost:3001/api/auth/google"
 
 ### CREATE PROFILE
 
 POST  {{local}}/api/profile/Create-profile/
 Content-Type: application/json
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Mjk4OWViZDgyMGZmZDE4YjEyYTQ4MSIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJpYXQiOjE3NjQzMzI3Mjd9.KXkFshRyuRet581K3jT8QMOU7hhuKpybrqu2znmfBd8
 
 
 {
-  "fullName": "אריאל",
+  "fullName": "יצחק בן יצחק",
   "gender": "נקבה",
   "age": 29,
   "height": 173,
@@ -26,5 +28,14 @@ DELETE  {{local}}/api/profile/Delete-profiles/
 
 ### GET ALL PROFILES:
 
-GET  {{local}}/api/profile/All-profiles/
+GET  {{localGoogle}}/api/profile/All-profiles/
+
+### SIGN IN
+
+GET  {{local}}/api/users/me
+
+### SIGN IN GOOGLE
+
+GET  {{local}}/
+
 

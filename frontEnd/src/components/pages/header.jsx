@@ -1,5 +1,7 @@
 // פונקציה אשר מחזירה רכיב של תקציר והסבר על מהות האפליקציה
 
+import Signin from "../signin";
+
 function Header() {
   return (
     <header className="d-flex flex-column justify-content-center align-items-center text-center bg-light p-4 ">
@@ -15,6 +17,7 @@ function Header() {
         עיבוד והעברה למנוע בינה מלאכותית, אשר מחזיר תפריט תזונתי מותאם אישית
         בהתאם לנתוני המשתמש.
       </p>
+      <Signin />
     </header>
   );
 }

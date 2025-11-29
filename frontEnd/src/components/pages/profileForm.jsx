@@ -6,6 +6,7 @@ import joi from "joi";
 import { useState, useTransition } from "react";
 import AIProfileReport from "../aiProfileReport";
 import { activity, targets } from "../../guidelines/sportActivity";
+import { useAuth } from "../../context/auth.context";
 
 // רכיב טופס למטרת בניית פרופיל משתמש אשר ינחה את הבינה המלאכותית לתת דו''ח מותאם אישית כמה שאפשר ולבסוף הנפקת והצגת הדו''ח
 function ProfileForm() {
@@ -15,6 +16,8 @@ function ProfileForm() {
   const [errorFromServer, setErrorFromServer] = useState(null); // שמירת השגיאות שהתקבלו מהשרת, שמירתן בסטייט למען מחווה למשתמש
 
   const [isPending, startTransition] = useTransition(); // הוק שעוטף את הפונקציה שצריכה לרוץ ברקע
+
+  const { tokenAuth } = useAuth();
 
   const form = useFormik({
     validateOnMount: false, // למען ביצוע ולידציה רק בעת ניסיון השליחה
@@ -71,7 +74,7 @@ function ProfileForm() {
       setErrorFromServer(null); //איפוס מצב השגיאות מהשרת
 
       try {
-        const response = await createUserProfile(profile);
+        const response = await createUserProfile(profile, tokenAuth);
         setProfileAIReport(response?.data?.AI_Report); // שמירת הדו''ח
         setUserProfile(response?.data?.profile); // שמירת פרופיל משתמש
         setPreReport(response?.data?.preReport); // שמירת דו''ח פרופיל ללא AI
@@ -85,6 +88,12 @@ function ProfileForm() {
         if (err) {
           setErrorFromServer(err?.message);
           console.log(err);
+        }
+
+        if (err?.status === 401) {
+          const errAuth =
+            "עלייך להתחבר בכדי לקבל דו''ח מותאם אישית" || err?.message;
+          setErrorFromServer(errAuth);
         }
       }
     },
