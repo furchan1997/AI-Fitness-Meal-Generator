@@ -29,6 +29,7 @@ router.get(
         fullName: req.user.fullName,
         email: req.user.email,
         avater: req.user.avatar,
+        role: req.user.role,
       });
     }
 
@@ -36,6 +37,7 @@ router.get(
       id: existUser._id,
       email: existUser.email,
       name: existUser.fullName,
+      role: existUser.role,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET);
     console.log("TOKEN:", token);

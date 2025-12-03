@@ -8,10 +8,11 @@ const { getRecommendationByBodyFat } = require("../calculations/bodyFat");
 const { dailyCalotieIntake } = require("../calculations/dailyCalotieIntake");
 const { buildPreReport } = require("../services/preReport");
 const authMW = require("../Middleware/auth");
+const adminMW = require("../Middleware/admin");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", authMW, async (req, res, next) => {
-  console.log(req.user);
+  console.log("USER:", req.user);
   try {
     // בדיקת שגיאות של שדות(סטטוס 400)
     const { error } = userProfileValidate(req.body);
@@ -31,7 +32,6 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
     const proteinIntake = proteinIntakeCulc({ target, weight }); // שליחת מידע למשתמש עבור צריכת כמות חלבון לפי המטרה שלו
     const suitability = getRecommendationByBodyFat({ target, bodyFat, gender }); // בדיקת טווח אחוזי שומן תקינים
     const caloriIntake = dailyCalotieIntake({ target, tdee }); // שליחת כמות הקלורית היומית עבור משתמש
-
     // שליחת דו''ח מוקדם ללא AI:
     const preReport = buildPreReport({
       target,
@@ -42,9 +42,12 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
       isHealthTargetAndLowCalo: suitability?.isHealthTargetAndLowCalo,
     });
 
+    const userId = req.user.id;
+
     // יצירת מסמך חדש ושמירתו בבסיס הנתונים
     const profile = await userProfile.create({
       ...req.body,
+      userId,
       target: target,
       bmr,
       tdee,
@@ -69,10 +72,11 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
       preReport,
       msg: profile.RecommendationByBodyFat,
     };
-
+    console.log(req.body);
     const aiReport = await buildReport(profileForAI);
     res.status(201).json({
       message: "Profile created.",
+      userId,
       profile,
       preReport,
       AI_Report: aiReport,
@@ -83,7 +87,7 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
 });
 
 // מחיקת כל הפרופילים
-router.delete("/Delete-profiles/", async (req, res, next) => {
+router.delete("/Delete-profiles/", authMW, adminMW, async (req, res, next) => {
   try {
     const profiles = await userProfile.deleteMany({}, {});
     if (profiles.deletedCount === 0) {
@@ -103,7 +107,7 @@ router.delete("/Delete-profiles/", async (req, res, next) => {
 });
 
 // קבלת כל הפרופילים
-router.get("/All-profiles/", async (req, res, next) => {
+router.get("/All-profiles/", authMW, adminMW, async (req, res, next) => {
   try {
     const profiles = await userProfile.find({}, {});
     if (profiles.length === 0) {
@@ -122,4 +126,35 @@ router.get("/All-profiles/", async (req, res, next) => {
   }
 });
 
+// קבלת כל הפרופילים של משתמש יחיד לפי מזהה
+router.get("/My-profiles/", authMW, async (req, res, next) => {
+  try {
+    const user = await userProfile.find({ userId: req.user.id });
+
+    if (user.length === 0) {
+      res.json({
+        message: "No profilie yet.",
+      });
+      return;
+    }
+
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// קבלת פרופיל יחיד של משתמש לפי מזהה
+router.get("/My-profile/:id", authMW, async (req, res, next) => {
+  const profile = await userProfile.findOne({
+    _id: req.params.id,
+    userId: req.user.id,
+  });
+
+  if (!profile) {
+    res.status(404).json({ message: "Profile not found" });
+    return;
+  }
+  res.json(profile);
+});
 module.exports = router;

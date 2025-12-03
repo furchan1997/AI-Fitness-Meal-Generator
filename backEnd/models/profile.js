@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const joi = require("joi");
 // יצירת סכמה תואמת עבור פרופיל המשתמש
 const profileSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   fullName: {
     type: String,
     minlength: 2,

@@ -1,11 +1,13 @@
 @local=http://localhost:3001
 @localGoogle="http://localhost:3001/api/auth/google"
+@user_1=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZDdiMzNhOWVjZWVmNzU0MTYxZSIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NjQ0NTQ1MDV9.Zqn9FBr04SJjY4ebAtrxpQvf3TpEyF5WexRdzbkKk3c
+@user_2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZjJlNTc1MGVmMWVjZDM4NGUwNSIsImVtYWlsIjoiYXJpZWxiZW5vcjYyQGdtYWlsLmNvbSIsIm5hbWUiOiJhcmllbCBiZW4gb3IiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2NDQ1NDE5MH0.flpooXBIH-A6Lu4dDjK10WaT--tpafkcX-MDLpnKZZ4
 
 ### CREATE PROFILE
 
 POST  {{local}}/api/profile/Create-profile/
 Content-Type: application/json
-x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Mjk4OWViZDgyMGZmZDE4YjEyYTQ4MSIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJpYXQiOjE3NjQzMzI3Mjd9.KXkFshRyuRet581K3jT8QMOU7hhuKpybrqu2znmfBd8
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZDdiMzNhOWVjZWVmNzU0MTYxZSIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NjQ0NTQ1MDV9.Zqn9FBr04SJjY4ebAtrxpQvf3TpEyF5WexRdzbkKk3c
 
 
 {
@@ -28,14 +30,39 @@ DELETE  {{local}}/api/profile/Delete-profiles/
 
 ### GET ALL PROFILES:
 
-GET  {{localGoogle}}/api/profile/All-profiles/
+GET  {{local}}/api/profile/All-profiles/
+x-auth-token: {{user_1}}
 
-### SIGN IN
+### GET USER
 
-GET  {{local}}/api/users/me
+GET  {{local}}/api/users/Me
+x-auth-token: {{user_2}}
 
-### SIGN IN GOOGLE
+### GET ALL PROFILE USER
 
-GET  {{local}}/
+GET  {{local}}/api/profile/My-profiles/
+x-auth-token: {{user_1}}
+
+### GET PROFILE:
+
+GET  {{local}}/api/profile/My-profile/692b52a0972210d83fbc7ea5
+x-auth-token: {{user_1}}
 
 
+### UPDATE TO ADMIN: 
+PATCH  {{local}}/api/users/Is-admin/
+x-auth-token: {{user_1}}
+
+
+### GET USER
+GET  {{local}}/api/users/Me
+x-auth-token: {{user_2}}
+
+
+### GET ALL USERS
+GET  {{local}}/api/users/
+x-auth-token: {{user_1}}
+
+### DELETE ALL USERS
+DELETE  {{local}}/api/users/
+x-auth-token: {{user_1}}
