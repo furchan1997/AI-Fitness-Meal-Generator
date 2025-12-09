@@ -87,6 +87,9 @@ const profileSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  preReport: {
+    type: Object,
+  },
   caloriIntake: { type: Number, default: 0 },
   createAt: {
     type: Date,

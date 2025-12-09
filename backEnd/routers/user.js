@@ -40,7 +40,7 @@ router.get("/Me", authMW, async (req, res, next) => {
 });
 
 // עדכון משתמש למשתמש מנהל
-router.patch("/Is-admin", authMW, adminMW, async (req, res, next) => {
+router.patch("/Is-admin", authMW, async (req, res, next) => {
   try {
     const user = await User.findOneAndUpdate(
       { email: "arielhodaya@gmail.com" },

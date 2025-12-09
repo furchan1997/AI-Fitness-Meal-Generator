@@ -12,7 +12,6 @@ const adminMW = require("../Middleware/admin");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", authMW, async (req, res, next) => {
-  console.log("USER:", req.user);
   try {
     // בדיקת שגיאות של שדות(סטטוס 400)
     const { error } = userProfileValidate(req.body);
@@ -55,6 +54,7 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
       RecommendationByBodyFat: suitability?.message,
       dangerZone: suitability?.dangerZone,
       caloriIntake,
+      preReport,
     });
     await profile.save();
 
@@ -72,7 +72,7 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
       preReport,
       msg: profile.RecommendationByBodyFat,
     };
-    console.log(req.body);
+
     const aiReport = await buildReport(profileForAI);
     res.status(201).json({
       message: "Profile created.",
@@ -137,7 +137,7 @@ router.get("/My-profiles/", authMW, async (req, res, next) => {
       });
       return;
     }
-
+    console.log(user);
     res.json(user);
   } catch (err) {
     next(err);
@@ -157,4 +157,5 @@ router.get("/My-profile/:id", authMW, async (req, res, next) => {
   }
   res.json(profile);
 });
+
 module.exports = router;

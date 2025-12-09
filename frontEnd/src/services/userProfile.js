@@ -11,3 +11,12 @@ export async function createUserProfile(profile, token) {
   );
   return response;
 }
+
+// API לקבלת כל הפרופילים של משתמש יחיד
+
+export async function getProfiles(token) {
+  const response = await httpserviseObj.get("/api/profile/My-profiles/", {
+    headers: { "x-auth-token": token },
+  });
+  return response;
+}

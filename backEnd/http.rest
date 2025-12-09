@@ -1,32 +1,33 @@
 @local=http://localhost:3001
 @localGoogle="http://localhost:3001/api/auth/google"
-@user_1=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZDdiMzNhOWVjZWVmNzU0MTYxZSIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NjQ0NTQ1MDV9.Zqn9FBr04SJjY4ebAtrxpQvf3TpEyF5WexRdzbkKk3c
+@user_1=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzY5MGYwOGVhY2NhOGMyYTNlYmRhMyIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoidXNlciIsImlhdCI6MTc2NTE4Mzg4NX0.wrRcCyxRkzKk3j_80tUXTc6Xj0_dl7RuoXKs9g7Xvx0
 @user_2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZjJlNTc1MGVmMWVjZDM4NGUwNSIsImVtYWlsIjoiYXJpZWxiZW5vcjYyQGdtYWlsLmNvbSIsIm5hbWUiOiJhcmllbCBiZW4gb3IiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2NDQ1NDE5MH0.flpooXBIH-A6Lu4dDjK10WaT--tpafkcX-MDLpnKZZ4
 
 ### CREATE PROFILE
 
 POST  {{local}}/api/profile/Create-profile/
 Content-Type: application/json
-x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZDdiMzNhOWVjZWVmNzU0MTYxZSIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NjQ0NTQ1MDV9.Zqn9FBr04SJjY4ebAtrxpQvf3TpEyF5WexRdzbkKk3c
+x-auth-token: {{user_1}}
 
 
 {
   "fullName": "יצחק בן יצחק",
   "gender": "נקבה",
-  "age": 29,
+  "age": 19,
   "height": 173,
   "weight": 80,
-  "target": "בריאות כללית",
+  "target": "מסה",
   "activity": "קל",
   "kosher": true,
   "vegetarian": false,  
-  "bodyFat":54,
+  "bodyFat":44,
   "favoFoods": "אוהב עוף על האש, טחינה, אורז מלא וירקות מאודים."
 }
 
 ### DELETE MANY: 
 
 DELETE  {{local}}/api/profile/Delete-profiles/
+x-auth-token: {{user_1}}
 
 ### GET ALL PROFILES:
 
@@ -36,7 +37,7 @@ x-auth-token: {{user_1}}
 ### GET USER
 
 GET  {{local}}/api/users/Me
-x-auth-token: {{user_2}}
+x-auth-token: {{user_1}}
 
 ### GET ALL PROFILE USER
 

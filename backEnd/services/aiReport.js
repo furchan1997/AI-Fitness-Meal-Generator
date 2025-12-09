@@ -14,7 +14,7 @@ async function buildReport(userProfile) {
 
     // בחירת מודל לשליחת הפרופיל והפרומפט
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.0-flash-lite",
     });
     console.log(prompt);
     // הנחיית המכונה

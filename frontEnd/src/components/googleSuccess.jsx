@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth.context";
 
 function GoogleSucccess() {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -18,8 +18,9 @@ function GoogleSucccess() {
     navigate("/", {
       replace: true,
     });
-  }, [location, login, navigate]);
+  }, [location, navigate]);
 
+  console.log(user);
   return <div>מתחבר, רק רגע...</div>;
 }
 

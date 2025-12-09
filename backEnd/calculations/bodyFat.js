@@ -128,7 +128,6 @@ const getRecommendationByBodyFat = ({ target, bodyFat, gender }) => {
     bodyFat < LIMITS.נקבה.cutLow &&
     gender === "נקבה"
   ) {
-    console.log(userGuidance?.message);
     return {
       ...userGuidance,
 

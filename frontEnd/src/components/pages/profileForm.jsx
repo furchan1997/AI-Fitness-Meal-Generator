@@ -1,24 +1,28 @@
 // שימוש בספריית פורמיק עבור יצירה וניהול טופס יצירת פרופיל עבור משתמש
 import { useFormik } from "formik";
 import Input from "../input";
-import { createUserProfile } from "../../services/userProfile";
-import joi from "joi";
-import { useState, useTransition } from "react";
+import { useEffect } from "react";
 import AIProfileReport from "../aiProfileReport";
 import { activity, targets } from "../../guidelines/sportActivity";
 import { useAuth } from "../../context/auth.context";
+import { useProfile } from "../../context/profile.context";
+import { profileValidate } from "../../validtion/profile";
 
 // רכיב טופס למטרת בניית פרופיל משתמש אשר ינחה את הבינה המלאכותית לתת דו''ח מותאם אישית כמה שאפשר ולבסוף הנפקת והצגת הדו''ח
 function ProfileForm() {
-  const [profileAIReport, setProfileAIReport] = useState({}); // שמירת דו''ח בינה מלאכותית שהתקבלה מהשרת בעזרת סטייט מותאם
-  const [userProfile, setUserProfile] = useState({}); // שמירת פרופיל משתמש סטייט מותאם
-  const [preReport, setPreReport] = useState({});
-  const [errorFromServer, setErrorFromServer] = useState(null); // שמירת השגיאות שהתקבלו מהשרת, שמירתן בסטייט למען מחווה למשתמש
+  // const [isPending, startTransition] = useTransition(); // הוק שעוטף את הפונקציה שצריכה לרוץ ברקע
+  const {
+    createNewProfile,
+    getMyProfiles,
+    userProfiles,
+    userProfile,
+    preReport,
+    profileAIReport,
+    errorFromServer,
+  } = useProfile();
+  const { tokenAuth, user } = useAuth();
 
-  const [isPending, startTransition] = useTransition(); // הוק שעוטף את הפונקציה שצריכה לרוץ ברקע
-
-  const { tokenAuth } = useAuth();
-
+  console.log(userProfile);
   const form = useFormik({
     validateOnMount: false, // למען ביצוע ולידציה רק בעת ניסיון השליחה
     validateOnChange: true, // בכל פעם שהמשתמש משנה את הערך באחד מהשדות אז פורמיק יריץ את פונקציית הוולידציה
@@ -31,7 +35,7 @@ function ProfileForm() {
       age: 30,
       height: 178,
       weight: 75,
-      target: "בריאות כללית",
+      target: "",
       activity: "קל",
       bodyFat: 39,
       kosher: true,
@@ -39,23 +43,10 @@ function ProfileForm() {
       favoFoods: "",
     },
 
-    // סכמת ולידציה של ג'וי
     validate(value) {
-      const schema = joi.object({
-        fullName: joi.string().min(2).max(16).required(),
-        gender: joi.string().valid("זכר", "נקבה").required(),
-        age: joi.number().min(16).max(70).required(),
-        height: joi.number().min(150).required(),
-        weight: joi.number().min(30).required(),
-        target: joi.string().valid("מסה", "חיטוב", "בריאות כללית").required(),
-        activity: joi.string().valid("קל", "בינוני", "קשה").required(),
-        kosher: joi.boolean().default(true),
-        vegetarian: joi.boolean().default(false),
-        bodyFat: joi.number().min(3).max(60).required(),
-        favoFoods: joi.string().min(0).max(256).default("").optional(),
-      });
+      // סכמת ולידציה של ג'וי
+      const { error } = profileValidate(value, { abortEarly: false });
 
-      const { error } = schema.validate(value, { abortEarly: false });
       // אובייקט השגיאות ולידציה שיתפסו מג'וי
       const errors = {};
       if (!error) return {};
@@ -71,34 +62,9 @@ function ProfileForm() {
 
     //  פונקציה אשר תשלח את ערכי הטופס לשרת
     async onSubmit(profile, { resetForm }) {
-      setErrorFromServer(null); //איפוס מצב השגיאות מהשרת
-
-      try {
-        const response = await createUserProfile(profile, tokenAuth);
-        setProfileAIReport(response?.data?.AI_Report); // שמירת הדו''ח
-        setUserProfile(response?.data?.profile); // שמירת פרופיל משתמש
-        setPreReport(response?.data?.preReport); // שמירת דו''ח פרופיל ללא AI
-        startTransition(() => {
-          resetForm(); // מנקה את הטופס, ניתן הרשאה לגרום לפונקציה הזו להידחות
-        });
-        console.log(response?.data);
-        return response?.data;
-      } catch (err) {
-        // טיפול במצבי שגיאה מהשרת
-        if (err) {
-          setErrorFromServer(err?.message);
-          console.log(err);
-        }
-
-        if (err?.status === 401) {
-          const errAuth =
-            "עלייך להתחבר בכדי לקבל דו''ח מותאם אישית" || err?.message;
-          setErrorFromServer(errAuth);
-        }
-      }
+      await createNewProfile(profile, tokenAuth);
     },
   });
-
   return (
     <div className="container">
       <h1>מלא/י את השדות</h1>
@@ -220,7 +186,7 @@ function ProfileForm() {
         />
         <button className="btn btn-primary fw-bold" type="submit">
           {/*ניצול מצב בו ה-isPending מופעל ובעזרתו לנהל מצב ההתנה של התגובה מהשרת*/}
-          {form.isSubmitting || isPending ? "יוצר דו''ח..." : "שלח/י"}{" "}
+          שלח
         </button>
       </form>
 
