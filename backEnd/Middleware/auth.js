@@ -31,7 +31,6 @@ module.exports = async (req, res, next) => {
       email: user.email,
       role: user.role,
     };
-    console.log(decoded);
     next();
   } catch (err) {
     res.status(403).json({

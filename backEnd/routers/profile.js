@@ -9,6 +9,8 @@ const { dailyCalotieIntake } = require("../calculations/dailyCalotieIntake");
 const { buildPreReport } = require("../services/preReport");
 const authMW = require("../Middleware/auth");
 const adminMW = require("../Middleware/admin");
+const adminAndUserMW = require("../Middleware/adminAndUser");
+const { User } = require("../models/user");
 
 // יצירת פרופיל משתמש חדש
 router.post("/Create-profile/", authMW, async (req, res, next) => {
@@ -86,26 +88,6 @@ router.post("/Create-profile/", authMW, async (req, res, next) => {
   }
 });
 
-// מחיקת כל הפרופילים
-router.delete("/Delete-profiles/", authMW, adminMW, async (req, res, next) => {
-  try {
-    const profiles = await userProfile.deleteMany({}, {});
-    if (profiles.deletedCount === 0) {
-      res.status(404).json({
-        message: "No profiles found.",
-      });
-      return;
-    }
-
-    res.json({
-      message: "Profiles deleted.",
-      profiles: profiles.deletedCount,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
 // קבלת כל הפרופילים
 router.get("/All-profiles/", authMW, adminMW, async (req, res, next) => {
   try {
@@ -126,36 +108,134 @@ router.get("/All-profiles/", authMW, adminMW, async (req, res, next) => {
   }
 });
 
-// קבלת כל הפרופילים של משתמש יחיד לפי מזהה
-router.get("/My-profiles/", authMW, async (req, res, next) => {
-  try {
-    const user = await userProfile.find({ userId: req.user.id });
+// קבלת כל הפרופילים של משתמש יחיד לפי מזהה על ידיי מנהל או בעל החשבון
+router.get(
+  "/My-profiles/:id",
+  authMW,
+  adminAndUserMW,
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const isAdmin = req.user.role === "admin";
+      const isOwner = req.user.id;
 
-    if (user.length === 0) {
-      res.json({
-        message: "No profilie yet.",
+      if (!isAdmin && isOwner.toString() !== id) {
+        res.status(403).json({ message: "No auth." });
+        return;
+      }
+
+      const profiles = await userProfile.find({ userId: isOwner });
+
+      if (!profiles) {
+        res.status(404).json({ message: "No profiles yet." });
+        return;
+      }
+
+      res.status(200).json({
+        profiles,
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+//  קבלת פרופיל יחיד של משתמש לפי מזהה על ידיי בעל החשבון או מנהל
+router.get("/My-profile/:id", authMW, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const profile = await userProfile.findById(id);
+
+    if (!profile) {
+      res.status(404).json({ message: "Profile not found." });
       return;
     }
-    console.log(user);
-    res.json(user);
+
+    const isAdmin = req.user.role === "admin";
+    const isOwner = profile.userId.equals(req.user.id);
+
+    if (!isAdmin && !isOwner) {
+      res.status(403).json({ message: "No auth." });
+      return;
+    }
+
+    res.status(200).json({
+      message: "The profile.",
+      profile,
+    });
   } catch (err) {
     next(err);
   }
 });
 
-// קבלת פרופיל יחיד של משתמש לפי מזהה
-router.get("/My-profile/:id", authMW, async (req, res, next) => {
-  const profile = await userProfile.findOne({
-    _id: req.params.id,
-    userId: req.user.id,
-  });
+// מחיקת פרופיל יחיד על ידיי בעל החשבון או מנהל
+router.delete(
+  "/Delete-profile/:id",
+  authMW,
+  adminAndUserMW,
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const { role } = req.user;
+      let profile;
+      let message;
 
-  if (!profile) {
-    res.status(404).json({ message: "Profile not found" });
-    return;
+      if (role === "admin") {
+        profile = await userProfile.findOneAndDelete({ _id: id });
+        message = "Profile delete by admin.";
+      } else {
+        profile = await userProfile.findOneAndDelete({
+          _id: id,
+          userId: req.user.id,
+        });
+        message = "Profile delete by the user.";
+      }
+
+      if (!profile) {
+        return res.status(404).json({
+          message: "Profile not found.",
+        });
+      }
+
+      res.json({
+        message,
+        profile,
+      });
+    } catch (err) {
+      next(err);
+    }
   }
-  res.json(profile);
-});
+);
+
+// מחיקת כל פרופילים של משתמש על ידיי מנהל ובעל החשבון
+router.delete(
+  "/Delete-profiles",
+  authMW,
+  adminAndUserMW,
+
+  async (req, res, next) => {
+    let profiles;
+    let message;
+
+    const { role, id } = req.user;
+
+    if (role === "admin") {
+      profiles = await userProfile.deleteMany({});
+      message = "Profiles delete by admin.";
+    } else {
+      profiles = await userProfile.deleteMany({
+        userId: id,
+      });
+      message = "Profiles delete by the user.";
+    }
+
+    if (profiles?.deletedCount === 0) {
+      res.json({ message: "No profiles yet." });
+      return;
+    }
+
+    res.json({ message, profiles: profiles?.deletedCount });
+  }
+);
 
 module.exports = router;

@@ -15,7 +15,7 @@ router.get("/", authMW, adminMW, async (req, res, next) => {
       });
       return;
     }
-    res.json(users);
+    res.status(200).json(users);
   } catch (err) {
     next(err);
   }
@@ -23,7 +23,6 @@ router.get("/", authMW, adminMW, async (req, res, next) => {
 
 // קבלת משתמש יחיד לפי מזהה
 router.get("/Me", authMW, async (req, res, next) => {
-  console.log(req.user);
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
@@ -39,31 +38,21 @@ router.get("/Me", authMW, async (req, res, next) => {
   }
 });
 
-// עדכון משתמש למשתמש מנהל
-router.patch("/Is-admin", authMW, async (req, res, next) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { email: "arielhodaya@gmail.com" },
-      { role: "admin" },
-      { returnDocument: "after" }
-    );
+// קבלת משתמש יחיד עבור מנהל בלבד
+router.get("/Me/:id", authMW, adminMW, async (req, res, next) => {
+  const id = req.params.id;
+  const user = await User.findOne({ _id: id }, {});
+  console.log(user);
 
-    if (!user) {
-      res.status(404).json({
-        message: "User not found.",
-      });
-      return;
-    }
-
-    res.json({
-      message: `The user with email: ${user.email} become to admin.`,
-      user,
-    });
-  } catch (err) {
-    next(err);
+  if (!user) {
+    res.status(404).json({ message: "User not found." });
+    return;
   }
+
+  res.status(200).json(user);
 });
 
+// מחיקת כל המשתמשים על ידיי מנהל בלבד
 router.delete("/", authMW, adminMW, async (req, res, next) => {
   try {
     const users = (await User.deleteMany({}, {})).deletedCount;

@@ -1,7 +1,7 @@
 @local=http://localhost:3001
 @localGoogle="http://localhost:3001/api/auth/google"
-@user_1=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzY5MGYwOGVhY2NhOGMyYTNlYmRhMyIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoidXNlciIsImlhdCI6MTc2NTE4Mzg4NX0.wrRcCyxRkzKk3j_80tUXTc6Xj0_dl7RuoXKs9g7Xvx0
-@user_2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmI2ZjJlNTc1MGVmMWVjZDM4NGUwNSIsImVtYWlsIjoiYXJpZWxiZW5vcjYyQGdtYWlsLmNvbSIsIm5hbWUiOiJhcmllbCBiZW4gb3IiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2NDQ1NDE5MH0.flpooXBIH-A6Lu4dDjK10WaT--tpafkcX-MDLpnKZZ4
+@user_1= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzY5MGYwOGVhY2NhOGMyYTNlYmRhMyIsImVtYWlsIjoiYXJpZWxob2RheWFAZ21haWwuY29tIiwibmFtZSI6IteQ16jXmdeQ15wg15HXnyDXkNeV16giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NjU0NTEwMjl9.K9cv3K7BUD5LKrJIEOUyql24zJ8vGV2FAa69Xkheeuo
+@user_2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzZmZGRkZGE5ZGM2N2NjN2VlYTY2YyIsImVtYWlsIjoiYXJpZWxiZW5vcjYyQGdtYWlsLmNvbSIsIm5hbWUiOiJhcmllbCBiZW4gb3IiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2NTQ1MTA1Nn0.XmWRDc0PhneuCPqKNSQWtRpJOB1EIu3Z-oYahMcFCKY
 
 ### CREATE PROFILE
 
@@ -25,30 +25,12 @@ x-auth-token: {{user_1}}
 }
 
 ### DELETE MANY: 
-
 DELETE  {{local}}/api/profile/Delete-profiles/
 x-auth-token: {{user_1}}
 
 ### GET ALL PROFILES:
-
 GET  {{local}}/api/profile/All-profiles/
 x-auth-token: {{user_1}}
-
-### GET USER
-
-GET  {{local}}/api/users/Me
-x-auth-token: {{user_1}}
-
-### GET ALL PROFILE USER
-
-GET  {{local}}/api/profile/My-profiles/
-x-auth-token: {{user_1}}
-
-### GET PROFILE:
-
-GET  {{local}}/api/profile/My-profile/692b52a0972210d83fbc7ea5
-x-auth-token: {{user_1}}
-
 
 ### UPDATE TO ADMIN: 
 PATCH  {{local}}/api/users/Is-admin/
@@ -66,4 +48,33 @@ x-auth-token: {{user_1}}
 
 ### DELETE ALL USERS
 DELETE  {{local}}/api/users/
+x-auth-token: {{user_1}}
+
+### DELETE PROFILE
+DELETE  {{local}}/api/profile/Delete-profile/693aa927e8902ce16fd5bd5e
+x-auth-token: {{user_1}}
+
+### DELETE ALL PROFILES
+DELETE  {{local}}/api/profile/Delete-profiles/
+x-auth-token: {{user_1}}
+
+
+### GET ALL PROFILE USER
+GET  {{local}}/api/profile/My-profiles/
+x-auth-token: {{user_2}}
+
+### GET PROFILE:
+GET  {{local}}/api/profile/My-profile/693aa927e8902ce16fd5bd5e
+x-auth-token: {{user_1}}
+
+### GET ALL PROFILE USER
+GET  {{local}}/api/profile/My-profiles/693690f08eacca8c2a3ebda3
+x-auth-token: {{user_1}}
+
+### GET USER
+GET  {{local}}/api/users/Me
+x-auth-token: {{user_1}}
+
+### GET USER BY ADMIN
+GET  {{local}}/api/users/Me/693690f08eacca8c2a3ebda3
 x-auth-token: {{user_1}}

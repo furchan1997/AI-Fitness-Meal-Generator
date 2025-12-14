@@ -40,6 +40,7 @@ router.get(
       role: existUser.role,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET);
+
     console.log("TOKEN:", token);
 
     res.redirect(`http://localhost:5173/auth/google/success?token=${token}`);
